@@ -1,0 +1,75 @@
+{
+  "name": "gatsby-source-wpgraphql-images",
+  "description": "A Gatsby source plugin that proactively downloads all wp media items and hosts the locally.",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "Rainer Burgstaller <rburgst@gmail.com>",
+  "keywords": [
+    "gatsby",
+    "gatsby-plugin",
+    "image",
+    "wordpress",
+    "wpgraphql"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rburgst/gatsby-source-wpgraphql-images.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@babel/runtime": "^7.0.0",
+    "@emotion/core": "^10.0.14",
+    "@mdx-js/react": "^1.5.9",
+    "apollo-link": "^1.2.14",
+    "apollo-link-http": "^1.5.17",
+    "cheerio": "^1.0.0-rc.3",
+    "gatsby": "^2.20.36",
+    "gatsby-image": "^2.3.5",
+    "gatsby-plugin-sharp": "<=2.4.4",
+    "gatsby-source-filesystem": "^2.2.5",
+    "gatsby-transformer-sharp": "^2.4.7",
+    "graphql-tag": "^2.10.3",
+    "html-react-parser": "^0.10.3",
+    "lodash": "^4.17.11",
+    "theme-ui": "^0.3.1",
+    "urijs": "^1.19.1"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.2",
+    "eslint": "^6.0.1",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.14.2",
+    "husky": "^4.2.5",
+    "import-sort-style-module": "^6.0.0",
+    "lint-staged": "^10.2.2",
+    "prettier": "^2.0.5",
+    "prettier-plugin-import-sort": "^0.0.4"
+  },
+  "lint-staged": {
+    "!(*test).js": [
+      "prettier --write"
+    ],
+    "*test.js": [
+      "prettier --write"
+    ]
+  },
+  "importSort": {
+    ".js, .jsx, .ts, .tsx": {
+      "style": "module"
+    }
+  },
+  "peerDependencies": {
+    "gatsby": "^2.13.12",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
+    "autofix": "eslint src *.js  --fix"
+  }
+}
