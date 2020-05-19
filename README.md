@@ -11,6 +11,10 @@ It is a source plugin that will download all media items from wordpress (warning
 
 The problem with the above mentioned plugins is that they will cause frequent rebuilds of
 the whole page tree which (depending on your wordpress instance) can take a significant amount of time.
+For more information about this problem, see 
+
+* https://github.com/gatsbyjs/gatsby/issues/15906
+* https://github.com/gatsbyjs/gatsby/issues/20083
 
 In addition these plugins dont aggressively cache the wordpress media files and on every rebuild
 it will cause a HTTP HEAD request for every media item therefore, additionally increasing
