@@ -6,6 +6,7 @@ import getByPath from 'lodash/get'
 import { jsx } from 'theme-ui'
 import { Styled } from 'theme-ui'
 import URIParser from 'urijs'
+import React from 'react';
 
 /**
  * swaps external URLs in <a> and <img> elements if they were downloaded and are available locally
@@ -68,12 +69,11 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
       // replaces local links with <Link> element
       if (
         domNode.name === 'a' &&
-        !wasLinkProcessed &&
-        elementUrlNoProtocol.includes(wordPressUrlNoProtocol) &&
-        !elementUrlNoProtocol.includes(uploadsUrlNoProtocol)
+        wasLinkProcessed !== undefined
       ) {
-        let url = urlParsed.path()
-        url = subdirectoryCorrection(url, wordPressUrl)
+        const parsedIndex = parseInt(wasLinkProcessed, 10)
+        let url = files[parsedIndex].publicURL
+        // url = subdirectoryCorrection(url, wordPressUrl)
         return (
           <Styled.a as={Link} to={url} className={className}>
             {domToReact(domNode.children, parserOptions)}

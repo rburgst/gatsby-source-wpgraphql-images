@@ -1,0 +1,147 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`contentParser should properly parse inline pdf a 1`] = `
+Array [
+  <h1
+    className="en-mdl-prd-header__title en-format-h1 en-category-heading"
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
+  >
+    DER MESSIAS
+  </h1>,
+  "
+",
+  <div>
+    
+
+    <div
+      className="en-space-t-lg"
+      style={
+        Object {
+          "textAlign": "center",
+        }
+      }
+    >
+      
+
+      <p>
+        <span
+          className="en-format-semibold"
+        >
+          lorem psum
+        </span>
+      </p>
+      
+
+      <p
+        className="en-space-t-sm"
+        style={
+          Object {
+            "textAlign": "center",
+          }
+        }
+      >
+        someother text
+        <br />
+        
+another
+      </p>
+      
+
+    </div>
+    
+
+    <p
+      style={
+        Object {
+          "textAlign": "center",
+        }
+      }
+    >
+       23.01.2020, 26.01.2020, 31.01.2020
+    </p>
+    
+
+    <p
+      style={
+        Object {
+          "textAlign": "center",
+        }
+      }
+    >
+      Location
+    </p>
+    
+
+    <hr />
+    
+
+    <p>
+      „Lorem ipsum.
+    </p>
+    
+
+    <p>
+      Now prelude to a link: 
+      <a
+        href="https://server.com/wp-content/uploads/2019/12/MyPdf.pdf"
+        rel="noopener"
+        target="_blank"
+      >
+        Lorem ipsum link text
+      </a>
+    </p>
+    
+
+  </div>,
+  "
+",
+  <div
+    className="wp-video"
+    style={
+      Object {
+        "width": "1280px",
+      }
+    }
+  >
+    
+
+    <video
+      autoPlay={true}
+      className="wp-video-shortcode"
+      controls={true}
+      height="720"
+      id="video-9064848-1"
+      loop={true}
+      poster="https://server.com/wp-content/uploads/2019/01/poster.jpg"
+      preload="metadata"
+      width="1280"
+    >
+      <source
+        src="https://server.com/wp-content/uploads/2020/01/video.mp4?_=1"
+        type="video/mp4"
+      />
+      <a
+        href="https://server.com/wp-content/uploads/2020/01/video.mp4"
+      >
+        https://server.com/wp-content/uploads/2020/01/video.mp4
+      </a>
+    </video>
+  </div>,
+  "
+",
+  <p>
+     
+  </p>,
+  "
+",
+  <p>
+     
+  </p>,
+  "
+",
+]
+`;

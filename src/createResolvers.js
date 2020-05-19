@@ -76,7 +76,7 @@ module.exports = async function createResolvers(params, pluginOptions) {
     postsBeingParsed.set(uri, parsing)
 
     let finalRes = await parsing
-    return finalRes.foundImages
+    return finalRes.foundRefs
   }
 
   // `content` field Resolver
@@ -178,7 +178,10 @@ module.exports = async function createResolvers(params, pluginOptions) {
           type: 'File',
           resolve: async (source, args, context) => {
             const sourceUrl = source.sourceUrl || source.mediaItemUrl
-            const sourceUri = encodeURI(sourceUrl)
+            if (!sourceUrl) {
+              return undefined
+            }
+            const sourceUri = encodeURI(sourceUrl);
             const imageNode = context.nodeModel.getNodeById({
               id: sourceUri,
               type: 'File',

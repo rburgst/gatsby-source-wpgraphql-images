@@ -40,13 +40,18 @@ function checkWordpressUrls(origUrl, wordPressUrls, uploadsUrls) {
 }
 
 function normalizeUrl(url, uploadsUrls, normalizedUrlPrefix) {
+  let strippedUrl = url
+  const queryPos = url.indexOf('?')
+  if (queryPos > 0) {
+    strippedUrl = url.substr(0, queryPos)
+  }
   for (let i = 0; i < uploadsUrls.length; i++) {
-    const uploadUrl = uploadsUrls[i]
-    if (url.startsWith(uploadUrl)) {
-      return url.replace(uploadUrl, normalizedUrlPrefix)
+    const uploadUrl = uploadsUrls[i];
+    if (strippedUrl.startsWith(uploadUrl)) {
+      return strippedUrl.replace(uploadUrl, normalizedUrlPrefix)
     }
   }
-  return url
+  return strippedUrl
 }
 
 /**
@@ -95,11 +100,11 @@ module.exports = async function sourceParser(
   let imageRefs = []
   let pRefs = []
   let swapSrc = new Map()
-  let foundImages = []
+  let foundRefs = []
   let didWork = false
 
-  $('a, img').each((i, item) => {
-    let url = item.attribs.href || item.attribs.src
+  $('a, img, video, source').each((i, item) => {
+    let url = item.attribs.href || item.attribs.src || item.attribs.poster
     let urlKey = url
 
     if (!url) {
@@ -149,12 +154,12 @@ module.exports = async function sourceParser(
         imageNode = context.nodeModel.getNodeById({ id: sourceUrl, type: 'File' })
       }
       if (imageNode) {
-        foundImages.push(imageNode)
+        foundRefs.push(imageNode)
 
         swapSrc.set(item.urlKey, {
           src: sourceUri,
           id: imageNode.id,
-          index: foundImages.length - 1,
+          index: foundRefs.length - 1,
         })
         return
         // if (supportedExtensions[imageNode.extension]) {
@@ -253,6 +258,20 @@ module.exports = async function sourceParser(
     $(item).removeAttr('sizes')
   })
 
+  $('video').each((i, item) => {
+    let url = item.attribs.poster
+    let swapVal = swapSrc.get(url)
+    if (!swapVal) {
+      return
+    }
+
+    // console.log('swapping src',$(item).attr('src'), '=>', swapVal.src)
+    $(item).attr('poster', swapVal.src)
+    if (swapVal.index !== undefined) {
+      $(item).attr('data-gts-poster-encfluid', swapVal.index)
+    }
+  })
+
   $('a').each((i, item) => {
     let url = item.attribs.href
     let swapVal = swapSrc.get(url)
@@ -263,9 +282,22 @@ module.exports = async function sourceParser(
     // console.log('swapping href',$(item).attr('src'), '=>', swapVal.src)
     $(item).attr('href', swapVal.src)
     // prevents converting to <Link> in contentParser
-    $(item).attr('data-gts-swapped-href', 'gts-swapped-href')
+    $(item).attr('data-gts-swapped-href', swapVal.index)
+  })
+
+  $('source').each((i, item) => {
+    let url = item.attribs.src
+    let swapVal = swapSrc.get(url)
+    if (!swapVal) {
+      return
+    }
+
+    // console.log('swapping href',$(item).attr('src'), '=>', swapVal.src)
+    $(item).attr('src', swapVal.src)
+    // prevents converting to <Link> in contentParser
+    $(item).attr('data-gts-swapped-src', swapVal.index)
   })
 
   const result = $.html()
-  return { parsed: result, didWork, foundImages }
+  return { parsed: result, didWork, foundRefs }
 }
