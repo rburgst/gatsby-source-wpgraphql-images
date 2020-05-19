@@ -69,10 +69,14 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
       // replaces local links with <Link> element
       if (
         domNode.name === 'a' &&
+        files &&
         wasLinkProcessed !== undefined
       ) {
         const parsedIndex = parseInt(wasLinkProcessed, 10)
-        let url = files[parsedIndex].publicURL
+        if (files.length <= parsedIndex) {
+          throw new Error(`did not find image with index ${parsedIndex}, have files: ${JSON.stringify(files)}`)
+        }
+        let url = files[parsedIndex].publicURL;
         // url = subdirectoryCorrection(url, wordPressUrl)
         return (
           <Styled.a as={Link} to={url} className={className}>
