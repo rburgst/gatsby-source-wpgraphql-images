@@ -83,7 +83,7 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
         let url = files[parsedIndex].publicURL;
         // url = subdirectoryCorrection(url, wordPressUrl)
         return (
-          <Styled.a as={Link} to={url} className={className}>
+          <Styled.a href={url} className={className}>
             {domToReact(domNode.children, parserOptions)}
           </Styled.a>
         )

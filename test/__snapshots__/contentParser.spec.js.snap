@@ -101,8 +101,6 @@ Array [
       <a
         className=" inline-parsed-img css-0"
         href="/static/c1624b1ea899ec0e662be2d2c55356e2/MyPdf.pdf"
-        onClick={[Function]}
-        onMouseEnter={[Function]}
       >
         Lorem ipsum link text
       </a>
@@ -144,8 +142,6 @@ Array [
       <a
         className=" inline-parsed-img css-0"
         href="/static/c1624b1ea899ec0e662be2d2c55356e2/video.mp4"
-        onClick={[Function]}
-        onMouseEnter={[Function]}
       >
         https://server.com/wp-content/uploads/2020/01/video.mp4
       </a>
