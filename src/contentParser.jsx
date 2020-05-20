@@ -36,7 +36,11 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
 
   const parserOptions = {
     replace: (domNode) => {
-      let elementUrl = (domNode.name === 'a' && domNode.attribs.href) || (domNode.name === 'img' && domNode.attribs.src) || null
+      let elementUrl = (domNode.name === 'a' && domNode.attribs.href)
+        || (domNode.name === 'img' && domNode.attribs.src)
+        || (domNode.name === 'video' && domNode.attribs.poster)
+        || (domNode.name === 'source' && domNode.attribs.src)
+        || null
 
       if (!elementUrl) {
         return
@@ -64,15 +68,15 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
 
       let className = getByPath(domNode, 'attribs.class', '') + ' inline-parsed-img'
       // links to local files have this attribute set in sourceParser
-      let wasLinkProcessed = getByPath(domNode, 'attribs[data-gts-swapped-href]', null)
+      let linkHrefIndex = getByPath(domNode, 'attribs[data-gts-swapped-href]', null)
 
       // replaces local links with <Link> element
       if (
         domNode.name === 'a' &&
         files &&
-        wasLinkProcessed !== undefined
+        linkHrefIndex !== null
       ) {
-        const parsedIndex = parseInt(wasLinkProcessed, 10)
+        const parsedIndex = parseInt(linkHrefIndex, 10)
         if (files.length <= parsedIndex) {
           throw new Error(`did not find image with index ${parsedIndex}, have files: ${JSON.stringify(files)}`)
         }
@@ -86,10 +90,55 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
       }
 
       // cleans up internal processing attribute
-      if (wasLinkProcessed) {
+      if (linkHrefIndex) {
         delete domNode.attribs['data-gts-swapped-href']
       }
 
+      let videoPosterIndex = getByPath(domNode, 'attribs[data-gts-poster-encfluid]', null)
+      if (domNode.name === 'video' && files && videoPosterIndex !== null) {
+        const parsedIndex = parseInt(videoPosterIndex, 10)
+        if (files.length <= parsedIndex) {
+          throw new Error(`did not find image with index ${parsedIndex}, have files: ${JSON.stringify(files)}`)
+        }
+        let url = files[parsedIndex].publicURL;
+
+        const domAttribs = {...domNode.attribs, poster: url}
+        delete domAttribs['data-gts-poster-encfluid']
+        // url = subdirectoryCorrection(url, wordPressUrl)
+        return (
+          <video {...domAttribs}>
+            {domToReact(domNode.children, parserOptions)}
+          </video>
+        )
+      }
+
+      if (videoPosterIndex) {
+        delete domNode.attribs['data-gts-poster-encfluid']
+      }
+
+      let sourceSrcIndex = getByPath(domNode, 'attribs[data-gts-swapped-src]', null)
+
+      if (domNode.name === 'source' && files && sourceSrcIndex !== null) {
+        const parsedIndex = parseInt(sourceSrcIndex, 10)
+        if (files.length <= parsedIndex) {
+          throw new Error(`did not find source with index ${parsedIndex}, have files: ${JSON.stringify(files)}`)
+        }
+        let url = files[parsedIndex].publicURL;
+
+        const domAttribs = {...domNode.attribs, src: url}
+        delete domAttribs['data-gts-swapped-src']
+
+        // url = subdirectoryCorrection(url, wordPressUrl)
+        return (
+          <source {...domAttribs}>
+            {domToReact(domNode.children, parserOptions)}
+          </source>
+        )
+      }
+
+      if (sourceSrcIndex) {
+        delete domNode.attribs['data-gts-swapped-src']
+      }
       // data passed from sourceParser
       const fluidData = domNode.name === 'img' && getByPath(domNode, 'attribs[data-gts-encfluid]', null)
 

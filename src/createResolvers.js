@@ -52,14 +52,14 @@ module.exports = async function createResolvers(params, pluginOptions) {
     // returns content from that node
     if (cached) {
       logger('node already created:', uri)
-      return cached.foundImages
+      return cached.foundRefs
     }
 
     // returns promise
     if (postsBeingParsed.has(uri)) {
       logger('node is already being parsed:', uri)
       let resultPromise = await postsBeingParsed.get(uri)
-      return resultPromise.foundImages
+      return resultPromise.foundRefs
     }
 
     const parsing = (async () => {
@@ -69,7 +69,7 @@ module.exports = async function createResolvers(params, pluginOptions) {
         return parseResult
       } catch (e) {
         console.log(`Failed sourceParser at ${uri}`, e)
-        return { parsed: content }
+        return { parsed: content, foundRefs: [] }
       }
     })()
 
@@ -181,7 +181,7 @@ module.exports = async function createResolvers(params, pluginOptions) {
             if (!sourceUrl) {
               return undefined
             }
-            const sourceUri = encodeURI(sourceUrl);
+            const sourceUri = encodeURI(sourceUrl)
             const imageNode = context.nodeModel.getNodeById({
               id: sourceUri,
               type: 'File',

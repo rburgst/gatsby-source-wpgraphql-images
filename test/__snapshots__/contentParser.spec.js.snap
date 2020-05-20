@@ -1,5 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`contentParser should not crash due to no  1`] = `
+<p>
+  Now prelude to a link: 
+  <a
+    href="https://server.com/wp-content/uploads/2019/12/MyPdf.pdf"
+    target="_blank"
+  >
+    Lorem ipsum link text
+  </a>
+</p>
+`;
+
 exports[`contentParser should properly parse inline pdf a 1`] = `
 Array [
   <h1
@@ -10,13 +22,13 @@ Array [
       }
     }
   >
-    DER MESSIAS
+    header
   </h1>,
   "
 ",
   <div>
     
-
+    
     <div
       className="en-space-t-lg"
       style={
@@ -26,7 +38,7 @@ Array [
       }
     >
       
-
+        
       <p>
         <span
           className="en-format-semibold"
@@ -35,7 +47,7 @@ Array [
         </span>
       </p>
       
-
+        
       <p
         className="en-space-t-sm"
         style={
@@ -47,13 +59,13 @@ Array [
         someother text
         <br />
         
-another
+            another
       </p>
       
-
+    
     </div>
     
-
+    
     <p
       style={
         Object {
@@ -64,7 +76,7 @@ another
        23.01.2020, 26.01.2020, 31.01.2020
     </p>
     
-
+    
     <p
       style={
         Object {
@@ -75,21 +87,22 @@ another
       Location
     </p>
     
-
+    
     <hr />
     
-
+    
     <p>
       „Lorem ipsum.
     </p>
     
-
+    
     <p>
       Now prelude to a link: 
       <a
-        href="https://server.com/wp-content/uploads/2019/12/MyPdf.pdf"
-        rel="noopener"
-        target="_blank"
+        className=" inline-parsed-img css-0"
+        href="/static/c1624b1ea899ec0e662be2d2c55356e2/MyPdf.pdf"
+        onClick={[Function]}
+        onMouseEnter={[Function]}
       >
         Lorem ipsum link text
       </a>
@@ -108,34 +121,40 @@ another
     }
   >
     
-
+    
     <video
-      autoPlay={true}
-      className="wp-video-shortcode"
-      controls={true}
+      autoplay="1"
+      class="wp-video-shortcode"
+      controls="controls"
       height="720"
       id="video-9064848-1"
-      loop={true}
-      poster="https://server.com/wp-content/uploads/2019/01/poster.jpg"
+      loop="1"
+      poster="/static/c1624b1ea899ec0e662be2d2c55356e2/poster.jpg"
       preload="metadata"
       width="1280"
     >
+      
+        
       <source
-        src="https://server.com/wp-content/uploads/2020/01/video.mp4?_=1"
+        src="/static/c1624b1ea899ec0e662be2d2c55356e2/video.mp4"
         type="video/mp4"
       />
+      
+        
       <a
-        href="https://server.com/wp-content/uploads/2020/01/video.mp4"
+        className=" inline-parsed-img css-0"
+        href="/static/c1624b1ea899ec0e662be2d2c55356e2/video.mp4"
+        onClick={[Function]}
+        onMouseEnter={[Function]}
       >
         https://server.com/wp-content/uploads/2020/01/video.mp4
       </a>
+      
+    
     </video>
+    
+
   </div>,
-  "
-",
-  <p>
-     
-  </p>,
   "
 ",
   <p>
