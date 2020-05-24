@@ -130,9 +130,7 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
 
         // url = subdirectoryCorrection(url, wordPressUrl)
         return (
-          <source {...domAttribs}>
-            {domToReact(domNode.children, parserOptions)}
-          </source>
+          <source {...domAttribs}/>
         )
       }
 
