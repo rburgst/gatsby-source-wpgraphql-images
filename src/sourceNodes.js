@@ -73,24 +73,25 @@ module.exports = async ({ actions, createNodeId, getCache, store, reporter, crea
     headers,
   })
   const query = gql`
-    query FetchImages($after: String, $pageSize: Int!) {
-      mediaItems(first: $pageSize, after: $after) {
-        pageInfo {
-          hasNextPage
-          endCursor
-        }
-        nodes {
-          sourceUrl
-          mediaItemUrl
-          mediaDetails {
-            sizes {
-              name
-              sourceUrl
-            }
+      query FetchImages($after: String, $pageSize: Int!) {
+          mediaItems(first: $pageSize, after: $after) {
+              pageInfo {
+                  hasNextPage
+                  endCursor
+              }
+              nodes {
+                  databaseId
+                  sourceUrl
+                  mediaItemUrl
+                  mediaDetails {
+                      sizes {
+                          name
+                          sourceUrl
+                      }
+                  }
+              }
           }
-        }
       }
-    }
   `
 
   const createFileNode = async (pathToFile, createNodeId, pluginOptions = {}) => {
@@ -170,7 +171,8 @@ module.exports = async ({ actions, createNodeId, getCache, store, reporter, crea
       fileCount += numFiles
       reporter.info(`done fetching ${numFiles} files from ${uri} count, ${fileCount}`)
       await Promise.all(
-        data.mediaItems.nodes.map(async ({ sourceUrl, mediaItemUrl, mediaDetails }) => {
+        data.mediaItems.nodes.map(async (node) => {
+          let { sourceUrl, mediaItemUrl, mediaDetails, databaseId } = node
           sourceUrl = sourceUrl || mediaItemUrl
           if (!sourceUrl || sourceUrl === 'false') {
             return undefined
@@ -186,6 +188,21 @@ module.exports = async ({ actions, createNodeId, getCache, store, reporter, crea
           if (!shouldDownloadMediaItem(sourceUrl)) {
             return undefined
           }
+
+          const myData = {id: databaseId , mediaItemId: databaseId, sourceUrl: rewritten}
+          const nodeContent = JSON.stringify(myData)
+          const nodeMeta = {
+            id: createNodeId(`wp-media-${databaseId}`),
+            parent: null,
+            children: [],
+            internal: {
+              type: `WordPressMediaItemLookup`,
+              content: nodeContent,
+              contentDigest: createContentDigest(myData),
+            },
+          }
+          const newNode = Object.assign({}, myData, nodeMeta)
+          createNode(newNode)
 
           // first check if we know that this is going to lead to a 404
           const is404 = await cache404.get(rewritten)
