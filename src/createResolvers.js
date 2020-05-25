@@ -140,14 +140,12 @@ module.exports = async function createResolvers(params, pluginOptions) {
 
   processPostTypes.forEach((element) => {
     let params = {}
-    params[`${pluginOptions.graphqlTypeName}_${element}Files`] = {
-      content: {
+    params[`${pluginOptions.graphqlTypeName}_${element}`] = {
+      contentFiles: {
         type: ['File'],
         resolve: contentResolverFiles,
       },
-    }
-    params[`${pluginOptions.graphqlTypeName}_${element}Parsed`] = {
-      content: {
+      contentParsed: {
         type: 'String',
         resolve: contentResolverParsed,
       },
