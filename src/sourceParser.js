@@ -46,7 +46,7 @@ function normalizeUrl(url, uploadsUrls, normalizedUrlPrefix) {
     strippedUrl = url.substr(0, queryPos)
   }
   for (let i = 0; i < uploadsUrls.length; i++) {
-    const uploadUrl = uploadsUrls[i];
+    const uploadUrl = uploadsUrls[i]
     if (strippedUrl.startsWith(uploadUrl)) {
       return strippedUrl.replace(uploadUrl, normalizedUrlPrefix)
     }
@@ -78,7 +78,7 @@ module.exports = async function sourceParser(
   { uploadsUrls, wordPressUrls, uploadsUrl, wordPressUrl, pathPrefix = '', generateWebp = true, httpHeaders = {}, debugOutput = false },
   params,
   context,
-  download
+  download,
 ) {
   const { actions, store, cache, reporter, createNodeId, getNodeAndSavePathDependency } = params
   const { createNode } = actions
@@ -97,13 +97,18 @@ module.exports = async function sourceParser(
   }
   const $ = cheerio.load(content, { xmlMode: true, decodeEntities: false })
 
-  let imageRefs = []
+  let localRefs = []
   let pRefs = []
   let swapSrc = new Map()
   let foundRefs = []
   let didWork = false
 
-  $('a, img, video, source').each((i, item) => {
+  // noscript causes html parser errors, see https://github.com/remarkablemark/html-dom-parser/issues/25
+  $('noscript').each((i, item) => {
+    $(item).remove()
+  })
+
+  $('a, img, video, audio, source').each((i, item) => {
     let url = item.attribs.href || item.attribs.src || item.attribs.poster
     let urlKey = url
 
@@ -115,14 +120,14 @@ module.exports = async function sourceParser(
       return
     }
 
-    if (imageRefs.some(({ url: storedUrl }) => storedUrl === url)) {
+    if (localRefs.some(({ url: storedUrl }) => storedUrl === url)) {
       // console.log('found image (again):' , url);
       return
     }
 
     // console.log('found image:' , url);
 
-    imageRefs.push({
+    localRefs.push({
       url,
       urlKey,
       name: item.name,
@@ -135,31 +140,55 @@ module.exports = async function sourceParser(
     if (item.name === 'img') {
       $(item)
         .parents('p')
-        .each(function (index, element) {
+        .each(function(index, element) {
           pRefs.push($(element))
           $(element).contents().insertAfter($(element))
         })
+    }
+    if (item.name === 'source') {
+      $(item).parents('video').attr('data-gts-processed', 'true')
+      $(item).parents('audio').attr('data-gts-processed', 'true')
     }
   })
 
   // deletes <p> elements
   pRefs.forEach((elem) => elem.remove())
 
+  // also replace <p>&nbsp;<p> until https://github.com/remarkablemark/html-dom-parser/issues/25 is fixed
+  $('p').each((index, item) => {
+    let childCount = item.children && item.children.length
+    if (childCount === 1) {
+      const child = item.children[0]
+      if (child.type === 'text' && child.data === '&nbsp;') {
+        child.data = " "
+      }
+    }
+  })
+
   await Promise.all(
-    imageRefs.map(async (item) => {
+    localRefs.map(async (item) => {
       const sourceUrl = normalizeUrl(item.url, uploadsUrls, uploadsUrl)
       const sourceUri = encodeURI(sourceUrl)
-      let imageNode = context.nodeModel.getNodeById({ id: sourceUri, type: 'File' })
-      if (!imageNode) {
-        imageNode = context.nodeModel.getNodeById({ id: sourceUrl, type: 'File' })
+
+      // first check if we have processed this url already
+
+      let fileNode = foundRefs.find((fNode) => fNode.id === sourceUri || fNode.id === sourceUrl)
+      let alreadyProcessedNode = !!fileNode
+      if (!fileNode) {
+        fileNode = context.nodeModel.getNodeById({ id: sourceUri, type: 'File' })
       }
-      if (imageNode) {
-        foundRefs.push(imageNode)
+      if (!fileNode) {
+        fileNode = context.nodeModel.getNodeById({ id: sourceUrl, type: 'File' })
+      }
+      if (fileNode) {
+        if (!alreadyProcessedNode) {
+          foundRefs.push(fileNode)
+        }
 
         swapSrc.set(item.urlKey, {
           src: sourceUri,
-          id: imageNode.id,
-          index: foundRefs.length - 1,
+          id: fileNode.id,
+          index: foundRefs.indexOf(fileNode),
         })
         return
         // if (supportedExtensions[imageNode.extension]) {
@@ -239,7 +268,7 @@ module.exports = async function sourceParser(
 
         console.log(`Downloaded file:`, item.url)
       }
-    })
+    }),
   )
 
   $('img').each((i, item) => {
@@ -259,6 +288,19 @@ module.exports = async function sourceParser(
   })
 
   $('video').each((i, item) => {
+    let url = item.attribs.poster
+    let swapVal = swapSrc.get(url)
+    if (!swapVal) {
+      return
+    }
+
+    // console.log('swapping src',$(item).attr('src'), '=>', swapVal.src)
+    $(item).attr('poster', swapVal.src)
+    if (swapVal.index !== undefined) {
+      $(item).attr('data-gts-poster-encfluid', swapVal.index)
+    }
+  })
+  $('audio').each((i, item) => {
     let url = item.attribs.poster
     let swapVal = swapSrc.get(url)
     if (!swapVal) {

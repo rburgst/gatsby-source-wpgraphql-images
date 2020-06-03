@@ -95,6 +95,7 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
       }
 
       let videoPosterIndex = getByPath(domNode, 'attribs[data-gts-poster-encfluid]', null)
+      const videoProcessed = getByPath(domNode, 'attribs[data-gts-processed]', null)
       if (domNode.name === 'video' && files && videoPosterIndex !== null) {
         const parsedIndex = parseInt(videoPosterIndex, 10)
         if (files.length <= parsedIndex) {
@@ -104,6 +105,7 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
 
         const domAttribs = {...domNode.attribs, poster: url}
         delete domAttribs['data-gts-poster-encfluid']
+        delete domAttribs['data-gts-processed']
         // url = subdirectoryCorrection(url, wordPressUrl)
         return (
           <video {...domAttribs}>
@@ -114,6 +116,15 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
 
       if (videoPosterIndex) {
         delete domNode.attribs['data-gts-poster-encfluid']
+      }
+      if (domNode.name === 'audio' && files && getByPath(domNode, 'attribs[data-gts-processed]', null)) {
+        const domAttribs = {...domNode.attribs}
+        delete domAttribs['data-gts-processed']
+        return (
+          <audio {...domAttribs}>
+            {domToReact(domNode.children, parserOptions)}
+          </audio>
+        )
       }
 
       let sourceSrcIndex = getByPath(domNode, 'attribs[data-gts-swapped-src]', null)
@@ -174,5 +185,6 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
     },
   }
 
-  return parser(content, parserOptions)
+  let parseResult = parser(content, parserOptions)
+  return parseResult
 }
