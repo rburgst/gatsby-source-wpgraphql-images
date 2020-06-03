@@ -274,7 +274,7 @@ Array [
     <p>
       Now prelude to a link: 
       <a
-        className=" inline-parsed-img css-0"
+        className=" inline-parsed-img"
         href="/static/c1624b1ea899ec0e662be2d2c55356e2/MyPdf.pdf"
       >
         Lorem ipsum link text
@@ -315,7 +315,7 @@ Array [
       
         
       <a
-        className=" inline-parsed-img css-0"
+        className=" inline-parsed-img"
         href="/static/c1624b1ea899ec0e662be2d2c55356e2/video.mp4"
       >
         https://server.com/wp-content/uploads/2020/01/video.mp4
@@ -426,7 +426,7 @@ Array [
               type="audio/mpeg"
             />
             <a
-              className=" inline-parsed-img css-0"
+              className=" inline-parsed-img"
               href="/static/c1624b1ea899ec0e662be2d2c55356e2/part1.mp3"
             >
               http://dockerhost:8000/wp-content/uploads/2019/04/part1.mp3

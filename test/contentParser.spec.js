@@ -1,6 +1,8 @@
 const contentParser = require('../src/contentParser')
 
 import renderer from 'react-test-renderer'
+import { renderToStaticMarkup } from 'react-dom/server'
+
 
 describe('contentParser', () => {
   const options = {
@@ -9,6 +11,10 @@ describe('contentParser', () => {
     wordPressUrls: ['https://server.com/'],
     wordPressUrl: 'https://server.com/',
   }
+
+  beforeEach(() => {
+    global.__BASE_PATH__ = ``
+  })
 
   it('should properly parse inline pdf a', () => {
     const files = [
@@ -171,4 +177,26 @@ describe('contentParser', () => {
     expect(json).toMatchSnapshot()
 
   })
+  it('should properly rewrite a hrefs', () => {
+    const files = [
+      {
+        publicURL: '/static/c1624b1ea899ec0e662be2d2c55356e2/part1.mp3',
+        childImageSharp: null,
+      },
+    ]
+
+    const content = `<p>Bla <strong>lorem ipsum</strong> bla bla <strong>strong bla</strong> some &#8211; entities at <a href="mailto:contact@server.com">contact@server.com</a> can be found!<br/>
+<strong>Further info can be found <a href="https://server.com/link/target/">here</a></strong>.</p>
+<p><strong>And adios</strong></p>
+`
+
+    const result = contentParser.default({ content, files }, options)
+    // const resultComponent = renderer.create(result)
+    const output = renderToStaticMarkup(result)
+    expect(output).toEqual(`<p>Bla <strong>lorem ipsum</strong> bla bla <strong>strong bla</strong> some – entities at <a href="mailto:contact@server.com">contact@server.com</a> can be found!<br/>
+<strong>Further info can be found <a href="/link/target/">here</a></strong>.</p>
+<p><strong>And adios</strong></p>
+`)
+  })
+
 })

@@ -2,11 +2,8 @@ import { Link } from 'gatsby'
 import Img from 'gatsby-image'
 import parser, { domToReact } from 'html-react-parser'
 import getByPath from 'lodash/get'
-/** @jsx jsx */
-import { jsx } from 'theme-ui'
-import { Styled } from 'theme-ui'
 import URIParser from 'urijs'
-import React from 'react';
+import React from 'react'
 
 /**
  * swaps external URLs in <a> and <img> elements if they were downloaded and are available locally
@@ -66,11 +63,34 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
       let uploadsUrlNoProtocol = uploadsUrl.replace(/^https?:/i, '')
       let wordPressUrlNoProtocol = wordPressUrl.replace(/^https?:/i, '')
 
-      let className = getByPath(domNode, 'attribs.class', '') + ' inline-parsed-img'
+      let className = getByPath(domNode, 'attribs.class', '')
+      let imageClassName = className + ' inline-parsed-img'
       // links to local files have this attribute set in sourceParser
       let linkHrefIndex = getByPath(domNode, 'attribs[data-gts-swapped-href]', null)
 
+
       // replaces local links with <Link> element
+      if (
+        domNode.name === 'a' &&
+        linkHrefIndex === null
+        &&
+        elementUrlNoProtocol.includes(wordPressUrlNoProtocol) &&
+        !elementUrlNoProtocol.includes(uploadsUrlNoProtocol)
+      ) {
+        let url = urlParsed.path()
+        url = subdirectoryCorrection(url, wordPressUrl)
+        const htmlOptions = {}
+        if (className !== '') {
+          htmlOptions.className = className
+        }
+        return (
+          <Link to={url} {...htmlOptions}>
+            {domToReact(domNode.children, parserOptions)}
+          </Link>
+        )
+      }
+
+      // replaces local links to files with <Link> element
       if (
         domNode.name === 'a' &&
         files &&
@@ -80,12 +100,12 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
         if (files.length <= parsedIndex) {
           throw new Error(`did not find image with index ${parsedIndex}, have files: ${JSON.stringify(files)}`)
         }
-        let url = files[parsedIndex].publicURL;
+        let url = files[parsedIndex].publicURL
         // url = subdirectoryCorrection(url, wordPressUrl)
         return (
-          <Styled.a href={url} className={className}>
+          <a href={url} className={imageClassName}>
             {domToReact(domNode.children, parserOptions)}
-          </Styled.a>
+          </a>
         )
       }
 
@@ -101,9 +121,9 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
         if (files.length <= parsedIndex) {
           throw new Error(`did not find image with index ${parsedIndex}, have files: ${JSON.stringify(files)}`)
         }
-        let url = files[parsedIndex].publicURL;
+        let url = files[parsedIndex].publicURL
 
-        const domAttribs = {...domNode.attribs, poster: url}
+        const domAttribs = { ...domNode.attribs, poster: url }
         delete domAttribs['data-gts-poster-encfluid']
         delete domAttribs['data-gts-processed']
         // url = subdirectoryCorrection(url, wordPressUrl)
@@ -118,7 +138,7 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
         delete domNode.attribs['data-gts-poster-encfluid']
       }
       if (domNode.name === 'audio' && files && getByPath(domNode, 'attribs[data-gts-processed]', null)) {
-        const domAttribs = {...domNode.attribs}
+        const domAttribs = { ...domNode.attribs }
         delete domAttribs['data-gts-processed']
         return (
           <audio {...domAttribs}>
@@ -134,9 +154,9 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
         if (files.length <= parsedIndex) {
           throw new Error(`did not find source with index ${parsedIndex}, have files: ${JSON.stringify(files)}`)
         }
-        let url = files[parsedIndex].publicURL;
+        let url = files[parsedIndex].publicURL
 
-        const domAttribs = {...domNode.attribs, src: url}
+        const domAttribs = { ...domNode.attribs, src: url }
         delete domAttribs['data-gts-swapped-src']
 
         // url = subdirectoryCorrection(url, wordPressUrl)
@@ -176,7 +196,7 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
               ...extraSx,
             }}
             fluid={fluidDataParsed}
-            className={className}
+            className={imageClassName}
             alt={altText}
             title={imageTitle}
           />
