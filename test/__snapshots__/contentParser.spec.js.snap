@@ -1,5 +1,46 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`contentParser should add preload metadata to video if not already stated 1`] = `
+Array [
+  <div>
+    Hello
+    
+    <video
+      autoplay="1"
+      class="wp-video-shortcode"
+      controls="controls"
+      height="720"
+      id="video-9064848-1"
+      loop="1"
+      poster="/static/c1624b1ea899ec0e662be2d2c55356e2/poster.jpg"
+      preload="metadata"
+      width="1280"
+    >
+      
+        
+      <source
+        src="/static/c1624b1ea899ec0e662be2d2c55356e2/video.mp4"
+        type="video/mp4"
+      />
+      
+        
+      <a
+        className=" inline-parsed-img"
+        href="/static/c1624b1ea899ec0e662be2d2c55356e2/video.mp4"
+      >
+        https://server.com/wp-content/uploads/2020/01/video.mp4
+      </a>
+      
+    
+    </video>
+    
+
+  </div>,
+  "
+",
+]
+`;
+
 exports[`contentParser should not crash due to no  1`] = `
 <p>
   Now prelude to a link: 
@@ -329,7 +370,7 @@ Array [
   "
 ",
   <p>
-     
+    &nbsp;
   </p>,
   "
 ",
@@ -364,79 +405,75 @@ Array [
 		
     <div
       className="wp-playlist-current-item"
-    >
-      
+    />
+    
 		
-      <audio
-        controls={true}
-        preload="none"
-        width="640"
-      >
-        
+    <audio
+      controls={true}
+      preload="none"
+      width="640"
+    />
+    
 	
-        <div
-          className="wp-playlist-next"
-        >
-          
+    <div
+      className="wp-playlist-next"
+    />
+    
 	
-          <div
-            className="wp-playlist-prev"
-          >
-            
+    <div
+      className="wp-playlist-prev"
+    />
+    
 	
 	
-            <script
-              className="wp-playlist-script"
-              dangerouslySetInnerHTML={
-                Object {
-                  "__html": "{\\"type\\":\\"audio\\",\\"tracklist\\":true,\\"tracknumbers\\":true,\\"images\\":false,\\"artists\\":false,\\"tracks\\":[{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-content\\\\/uploads\\\\/2019\\\\/04\\\\/part1.mp3\\",\\"type\\":\\"audio\\\\/mpeg\\",\\"title\\":\\"part 1\\",\\"caption\\":\\"\\",\\"description\\":\\"\\\\\\"Part 1\\\\\\".\\",\\"meta\\":{\\"length_formatted\\":\\"6:57\\"},\\"image\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64},\\"thumb\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64}},{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-content\\\\/uploads\\\\/2019\\\\/04\\\\/part2.mp3\\",\\"type\\":\\"audio\\\\/mpeg\\",\\"title\\":\\"part 2\\",\\"caption\\":\\"\\",\\"description\\":\\"\\\\\\"part 2\\\\\\".\\",\\"meta\\":{\\"length_formatted\\":\\"5:11\\"},\\"image\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64},\\"thumb\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64}},{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-content\\\\/uploads\\\\/2019\\\\/04\\\\/part3.mp3\\",\\"type\\":\\"audio\\\\/mpeg\\",\\"title\\":\\"part 3\\",\\"caption\\":\\"\\",\\"description\\":\\"\\\\\\"part 3\\\\\\".\\",\\"meta\\":{\\"length_formatted\\":\\"6:32\\"},\\"image\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64},\\"thumb\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64}},{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-content\\\\/uploads\\\\/2019\\\\/04\\\\/part4.mp3\\",\\"type\\":\\"audio\\\\/mpeg\\",\\"title\\":\\"part 4\\",\\"caption\\":\\"\\",\\"description\\":\\"\\\\\\"part 4\\\\\\".\\",\\"meta\\":{\\"length_formatted\\":\\"7:43\\"},\\"image\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64},\\"thumb\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64}},{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-content\\\\/uploads\\\\/2019\\\\/04\\\\/part5.mp3\\",\\"type\\":\\"audio\\\\/mpeg\\",\\"title\\":\\"part 5\\",\\"caption\\":\\"\\",\\"description\\":\\"\\\\\\"part 5\\\\\\".\\",\\"meta\\":{\\"length_formatted\\":\\"5:49\\"},\\"image\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64},\\"thumb\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64}},{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-content\\\\/uploads\\\\/2019\\\\/04\\\\/part6.mp3\\",\\"type\\":\\"audio\\\\/mpeg\\",\\"title\\":\\"part 6\\",\\"caption\\":\\"\\",\\"description\\":\\"\\\\\\"part 6\\\\\\".\\",\\"meta\\":{\\"length_formatted\\":\\"0:38\\"},\\"image\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64},\\"thumb\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64}}]}",
-                }
-              }
-              type="application/json"
-            />
-            
+    <script
+      className="wp-playlist-script"
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "{\\"type\\":\\"audio\\",\\"tracklist\\":true,\\"tracknumbers\\":true,\\"images\\":false,\\"artists\\":false,\\"tracks\\":[{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-content\\\\/uploads\\\\/2019\\\\/04\\\\/part1.mp3\\",\\"type\\":\\"audio\\\\/mpeg\\",\\"title\\":\\"part 1\\",\\"caption\\":\\"\\",\\"description\\":\\"\\\\\\"Part 1\\\\\\".\\",\\"meta\\":{\\"length_formatted\\":\\"6:57\\"},\\"image\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64},\\"thumb\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64}},{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-content\\\\/uploads\\\\/2019\\\\/04\\\\/part2.mp3\\",\\"type\\":\\"audio\\\\/mpeg\\",\\"title\\":\\"part 2\\",\\"caption\\":\\"\\",\\"description\\":\\"\\\\\\"part 2\\\\\\".\\",\\"meta\\":{\\"length_formatted\\":\\"5:11\\"},\\"image\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64},\\"thumb\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64}},{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-content\\\\/uploads\\\\/2019\\\\/04\\\\/part3.mp3\\",\\"type\\":\\"audio\\\\/mpeg\\",\\"title\\":\\"part 3\\",\\"caption\\":\\"\\",\\"description\\":\\"\\\\\\"part 3\\\\\\".\\",\\"meta\\":{\\"length_formatted\\":\\"6:32\\"},\\"image\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64},\\"thumb\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64}},{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-content\\\\/uploads\\\\/2019\\\\/04\\\\/part4.mp3\\",\\"type\\":\\"audio\\\\/mpeg\\",\\"title\\":\\"part 4\\",\\"caption\\":\\"\\",\\"description\\":\\"\\\\\\"part 4\\\\\\".\\",\\"meta\\":{\\"length_formatted\\":\\"7:43\\"},\\"image\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64},\\"thumb\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64}},{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-content\\\\/uploads\\\\/2019\\\\/04\\\\/part5.mp3\\",\\"type\\":\\"audio\\\\/mpeg\\",\\"title\\":\\"part 5\\",\\"caption\\":\\"\\",\\"description\\":\\"\\\\\\"part 5\\\\\\".\\",\\"meta\\":{\\"length_formatted\\":\\"5:49\\"},\\"image\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64},\\"thumb\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64}},{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-content\\\\/uploads\\\\/2019\\\\/04\\\\/part6.mp3\\",\\"type\\":\\"audio\\\\/mpeg\\",\\"title\\":\\"part 6\\",\\"caption\\":\\"\\",\\"description\\":\\"\\\\\\"part 6\\\\\\".\\",\\"meta\\":{\\"length_formatted\\":\\"0:38\\"},\\"image\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64},\\"thumb\\":{\\"src\\":\\"http:\\\\/\\\\/dockerhost:8000\\\\/wp-includes\\\\/images\\\\/media\\\\/audio.png\\",\\"width\\":48,\\"height\\":64}}]}",
+        }
+      }
+      type="application/json"
+    />
+    
 
-          </div>
-          
-	
-
-          <p>
-            <strong>
-              html5 audio
-            </strong>
-          </p>
-          
-
-          
-
-          <audio
-            className="wp-audio-shortcode"
-            controls={true}
-            data-gts-processed="true"
-            id="audio-2538-1"
-            preload="none"
-            style={
-              Object {
-                "width": "100%",
-              }
-            }
-          >
-            <source
-              src="/static/c1624b1ea899ec0e662be2d2c55356e2/part1.mp3"
-              type="audio/mpeg"
-            />
-            <a
-              className=" inline-parsed-img"
-              href="/static/c1624b1ea899ec0e662be2d2c55356e2/part1.mp3"
-            >
-              http://dockerhost:8000/wp-content/uploads/2019/04/part1.mp3
-            </a>
-          </audio>
-          
-
-        </div>
-      </audio>
-    </div>
   </div>,
+  "
+	
+",
+  <p>
+    <strong>
+      html5 audio
+    </strong>
+  </p>,
+  "
+",
+  "
+",
+  <audio
+    className="wp-audio-shortcode"
+    controls={true}
+    data-gts-processed="true"
+    id="audio-2538-1"
+    preload="none"
+    style={
+      Object {
+        "width": "100%",
+      }
+    }
+  >
+    <source
+      src="/static/c1624b1ea899ec0e662be2d2c55356e2/part1.mp3"
+      type="audio/mpeg"
+    />
+    <a
+      className=" inline-parsed-img"
+      href="/static/c1624b1ea899ec0e662be2d2c55356e2/part1.mp3"
+    >
+      http://dockerhost:8000/wp-content/uploads/2019/04/part1.mp3
+    </a>
+  </audio>,
+  "
+",
 ]
 `;

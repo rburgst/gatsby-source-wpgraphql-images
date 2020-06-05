@@ -70,6 +70,44 @@ describe('contentParser', () => {
     expect(json).toMatchSnapshot()
   })
 
+  it('should add preload metadata to video if not already stated', () => {
+    const files = [
+      {
+        publicURL: '/static/c1624b1ea899ec0e662be2d2c55356e2/MyPdf.pdf',
+        childImageSharp: null,
+      },
+      {
+        // https://server.com/wp-content/uploads/2019/01/poster.jpg
+        publicURL: '/static/c1624b1ea899ec0e662be2d2c55356e2/poster.jpg',
+        childImageSharp: null,
+      },
+      {
+        // https://server.com/wp-content/uploads/2020/01/video.mp4
+        publicURL: '/static/c1624b1ea899ec0e662be2d2c55356e2/video.mp4',
+        childImageSharp: null,
+      },
+      {
+        // https://server.com/wp-content/uploads/2020/01/video.mp4
+        publicURL: '/static/c1624b1ea899ec0e662be2d2c55356e2/video.mp4',
+        childImageSharp: null,
+      },
+    ]
+    const content = `<div>Hello
+    <video class="wp-video-shortcode" id="video-9064848-1" width="1280" height="720"
+           poster="https://server.com/wp-content/uploads/2019/01/poster.jpg"
+           loop="1" autoplay="1" controls="controls" data-gts-processed="true" data-gts-poster-encfluid="1">
+        <source type="video/mp4" src="https://server.com/wp-content/uploads/2020/01/video.mp4"
+                data-gts-swapped-src="2"/>
+        <a href="https://server.com/wp-content/uploads/2020/01/video.mp4" data-gts-swapped-href="3">https://server.com/wp-content/uploads/2020/01/video.mp4</a>
+    </video>
+</div>
+`
+    const result = contentParser.default({ content, files }, options)
+    const resultComponent = renderer.create(result)
+    const json = resultComponent.toJSON()
+    expect(json).toMatchSnapshot()
+  })
+
   it('should not crash due to no ', () => {
     const files = [
       {

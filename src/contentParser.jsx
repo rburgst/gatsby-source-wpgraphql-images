@@ -32,6 +32,10 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
   }
 
   const parserOptions = {
+    htmlparser2: {
+      decodeEntities: true,
+      xmlMode: true
+    },
     replace: (domNode) => {
       let elementUrl = (domNode.name === 'a' && domNode.attribs.href)
         || (domNode.name === 'img' && domNode.attribs.src)
@@ -124,6 +128,9 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
         let url = files[parsedIndex].publicURL
 
         const domAttribs = { ...domNode.attribs, poster: url }
+        if (!domAttribs.preload) {
+          domAttribs.preload = 'metadata'
+        }
         delete domAttribs['data-gts-poster-encfluid']
         delete domAttribs['data-gts-processed']
         // url = subdirectoryCorrection(url, wordPressUrl)
