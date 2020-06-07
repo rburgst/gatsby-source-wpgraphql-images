@@ -103,10 +103,10 @@ another</p>
 <p><strong>wp playlist</strong></p>
 <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
 	<div class="wp-playlist wp-audio-playlist wp-playlist-light">
-		<div class="wp-playlist-current-item"/>
+		<div class="wp-playlist-current-item"></div>
 		<audio controls="controls" preload="none" width="640"/>
-	<div class="wp-playlist-next"/>
-	<div class="wp-playlist-prev"/>
+	<div class="wp-playlist-next"></div>
+	<div class="wp-playlist-prev"></div>
 	
 	<script type="application/json" class="wp-playlist-script">{"type":"audio","tracklist":true,"tracknumbers":true,"images":false,"artists":false,"tracks":[{"src":"http:\\/\\/dockerhost:8000\\/wp-content\\/uploads\\/2019\\/04\\/part1.mp3","type":"audio\\/mpeg","title":"part 1","caption":"","description":"\\"Part 1\\".","meta":{"length_formatted":"6:57"},"image":{"src":"http:\\/\\/dockerhost:8000\\/wp-includes\\/images\\/media\\/audio.png","width":48,"height":64},"thumb":{"src":"http:\\/\\/dockerhost:8000\\/wp-includes\\/images\\/media\\/audio.png","width":48,"height":64}},{"src":"http:\\/\\/dockerhost:8000\\/wp-content\\/uploads\\/2019\\/04\\/part2.mp3","type":"audio\\/mpeg","title":"part 2","caption":"","description":"\\"part 2\\".","meta":{"length_formatted":"5:11"},"image":{"src":"http:\\/\\/dockerhost:8000\\/wp-includes\\/images\\/media\\/audio.png","width":48,"height":64},"thumb":{"src":"http:\\/\\/dockerhost:8000\\/wp-includes\\/images\\/media\\/audio.png","width":48,"height":64}},{"src":"http:\\/\\/dockerhost:8000\\/wp-content\\/uploads\\/2019\\/04\\/part3.mp3","type":"audio\\/mpeg","title":"part 3","caption":"","description":"\\"part 3\\".","meta":{"length_formatted":"6:32"},"image":{"src":"http:\\/\\/dockerhost:8000\\/wp-includes\\/images\\/media\\/audio.png","width":48,"height":64},"thumb":{"src":"http:\\/\\/dockerhost:8000\\/wp-includes\\/images\\/media\\/audio.png","width":48,"height":64}},{"src":"http:\\/\\/dockerhost:8000\\/wp-content\\/uploads\\/2019\\/04\\/part4.mp3","type":"audio\\/mpeg","title":"part 4","caption":"","description":"\\"part 4\\".","meta":{"length_formatted":"7:43"},"image":{"src":"http:\\/\\/dockerhost:8000\\/wp-includes\\/images\\/media\\/audio.png","width":48,"height":64},"thumb":{"src":"http:\\/\\/dockerhost:8000\\/wp-includes\\/images\\/media\\/audio.png","width":48,"height":64}},{"src":"http:\\/\\/dockerhost:8000\\/wp-content\\/uploads\\/2019\\/04\\/part5.mp3","type":"audio\\/mpeg","title":"part 5","caption":"","description":"\\"part 5\\".","meta":{"length_formatted":"5:49"},"image":{"src":"http:\\/\\/dockerhost:8000\\/wp-includes\\/images\\/media\\/audio.png","width":48,"height":64},"thumb":{"src":"http:\\/\\/dockerhost:8000\\/wp-includes\\/images\\/media\\/audio.png","width":48,"height":64}},{"src":"http:\\/\\/dockerhost:8000\\/wp-content\\/uploads\\/2019\\/04\\/part6.mp3","type":"audio\\/mpeg","title":"part 6","caption":"","description":"\\"part 6\\".","meta":{"length_formatted":"0:38"},"image":{"src":"http:\\/\\/dockerhost:8000\\/wp-includes\\/images\\/media\\/audio.png","width":48,"height":64},"thumb":{"src":"http:\\/\\/dockerhost:8000\\/wp-includes\\/images\\/media\\/audio.png","width":48,"height":64}}]}</script>
 </div>
@@ -117,10 +117,21 @@ another</p>
 `)
     expect(result.foundRefs).toEqual([
       {
-        "file": "part1.mp3",
-        "id": "https://server.com/wp-content/uploads/2019/04/part1.mp3"
-      }
+        'file': 'part1.mp3',
+        'id': 'https://server.com/wp-content/uploads/2019/04/part1.mp3',
+      },
     ])
   })
 
+  it('should rewrite empty div', async () => {
+    const content = `<p>lorem
+	<div class="wp-playlist-next"/>
+</p>
+`
+    const result = await sourceParser({ content }, options, params, context)
+    expect(result.parsed).toEqual(`<p>lorem
+	<div class="wp-playlist-next"></div>
+</p>
+`)
+  })
 })

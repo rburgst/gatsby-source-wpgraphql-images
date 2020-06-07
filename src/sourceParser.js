@@ -286,6 +286,10 @@ module.exports = async function sourceParser(
     $(item).removeAttr('srcset')
     $(item).removeAttr('sizes')
   })
+  // ensure that cheerio does not produce empty divs which are invalid html
+  // https://github.com/cheeriojs/cheerio/issues/1235
+  $('div').filter((i,e) => !e.children.length).text('')
+  $('p').filter((i,e) => !e.children.length).text('')
 
   $('video').each((i, item) => {
     let url = item.attribs.poster

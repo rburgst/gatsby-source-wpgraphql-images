@@ -1,8 +1,7 @@
 const contentParser = require('../src/contentParser')
 
-import renderer from 'react-test-renderer'
 import { renderToStaticMarkup } from 'react-dom/server'
-
+import renderer from 'react-test-renderer'
 
 describe('contentParser', () => {
   const options = {
@@ -108,7 +107,7 @@ describe('contentParser', () => {
     expect(json).toMatchSnapshot()
   })
 
-  it('should not crash due to no ', () => {
+  it('should not crash due to not found ref', () => {
     const files = [
       {
         publicURL: '/static/c1624b1ea899ec0e662be2d2c55356e2/MyPdf.pdf',
@@ -181,7 +180,6 @@ describe('contentParser', () => {
     const resultComponent = renderer.create(result)
     const json = resultComponent.toJSON()
     expect(json).toMatchSnapshot()
-
   })
 
   it('should properly parse simplified audio tags', () => {
@@ -213,8 +211,8 @@ describe('contentParser', () => {
     const resultComponent = renderer.create(result)
     const json = resultComponent.toJSON()
     expect(json).toMatchSnapshot()
-
   })
+
   it('should properly rewrite a hrefs', () => {
     const files = [
       {
@@ -231,10 +229,46 @@ describe('contentParser', () => {
     const result = contentParser.default({ content, files }, options)
     // const resultComponent = renderer.create(result)
     const output = renderToStaticMarkup(result)
-    expect(output).toEqual(`<p>Bla <strong>lorem ipsum</strong> bla bla <strong>strong bla</strong> some – entities at <a href="mailto:contact@server.com">contact@server.com</a> can be found!<br/>
+    expect(output)
+      .toEqual(`<p>Bla <strong>lorem ipsum</strong> bla bla <strong>strong bla</strong> some – entities at <a href="mailto:contact@server.com">contact@server.com</a> can be found!<br/>
 <strong>Further info can be found <a href="/link/target/">here</a></strong>.</p>
 <p><strong>And adios</strong></p>
 `)
   })
 
+  it('should pick webp image if available', () => {
+    const files = [
+      {
+        publicURL: '/static/c1624b1ea899ec0e662be2d2c55356e2/img.png',
+        childImageSharp: {
+          fluid: {
+            srcWebp: '/static/af2e8e490f207a56a56992795f0545c9/c6969/img.webp',
+            presentationWidth: 720,
+          },
+        },
+      },
+      {
+        // https://server.com/wp-content/uploads/2020/01/video.mp4
+        publicURL: '/static/c1624b1ea899ec0e662be2d2c55356e2/video.mp4',
+        childImageSharp: null,
+      },
+    ]
+
+    const content = `<div>bla<video class="wp-video-shortcode" id="video-9064848-1" width="1280" height="720"
+           poster="https://server.com/wp-content/uploads/2019/01/poster.jpg"
+           loop="1" preload="metadata" controls="controls" data-gts-processed="true" data-gts-poster-encfluid="0">
+        <source type="video/mp4" src="https://server.com/wp-content/uploads/2020/01/video.mp4"
+                data-gts-swapped-src="1"/>
+        <a href="https://server.com/wp-content/uploads/2020/01/video.mp4" data-gts-swapped-href="1">https://server.com/wp-content/uploads/2020/01/video.mp4</a>
+    </video></div>`
+
+    const result = contentParser.default({ content, files }, options)
+    // const resultComponent = renderer.create(result)
+    const output = renderToStaticMarkup(result)
+    expect(output)
+      .toEqual(`<div>bla<video id="video-9064848-1" width="1280" height="720" poster="/static/af2e8e490f207a56a56992795f0545c9/c6969/img.webp" loop="" preload="metadata" controls="" class="wp-video-shortcode">
+        <source type="video/mp4" src="/static/c1624b1ea899ec0e662be2d2c55356e2/video.mp4"/>
+        <a href="/static/c1624b1ea899ec0e662be2d2c55356e2/video.mp4" class=" inline-parsed-img">https://server.com/wp-content/uploads/2020/01/video.mp4</a>
+    </video></div>`)
+  })
 })

@@ -125,11 +125,18 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
         if (files.length <= parsedIndex) {
           throw new Error(`did not find image with index ${parsedIndex}, have files: ${JSON.stringify(files)}`)
         }
-        let url = files[parsedIndex].publicURL
+        let posterFile = files[parsedIndex]
+        let url = posterFile?.childImageSharp?.fluid?.srcWebp ?? posterFile?.childImageSharp?.fluid?.src ?? posterFile?.childImageSharp?.resize?.src ?? posterFile.publicURL
 
         const domAttribs = { ...domNode.attribs, poster: url }
         if (!domAttribs.preload) {
           domAttribs.preload = 'metadata'
+        }
+        // rewrite the class => classname
+        const className = domAttribs.class
+        if (className) {
+          delete domAttribs.class
+          domAttribs.className = className
         }
         delete domAttribs['data-gts-poster-encfluid']
         delete domAttribs['data-gts-processed']
