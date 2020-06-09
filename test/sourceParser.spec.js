@@ -51,8 +51,8 @@ another</p>
 </div>
 <div style="width: 1280px;" class="wp-video"><!--[if lt IE 9]><script>document.createElement('video');</script><![endif]-->
 <video class="wp-video-shortcode" id="video-9064848-1" width="1280" height="720" poster="https://server.com/wp-content/uploads/2019/01/poster.jpg" loop="1" autoplay="1" preload="metadata" controls="controls" data-gts-processed="true" data-gts-poster-encfluid="1"><source type="video/mp4" src="https://server.com/wp-content/uploads/2020/01/video.mp4" data-gts-swapped-src="2"/><a href="https://server.com/wp-content/uploads/2020/01/video.mp4" data-gts-swapped-href="2">https://server.com/wp-content/uploads/2020/01/video.mp4</a></video></div>
-<p> </p>
-<p> </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
 `)
     expect(result.foundRefs).toEqual([
       {
@@ -99,7 +99,7 @@ another</p>
 `
     const result = await sourceParser({ content }, options, params, context)
     expect(result.parsed).toEqual(`<p>lorem</p>
-<p> </p>
+<p>&nbsp;</p>
 <p><strong>wp playlist</strong></p>
 <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
 	<div class="wp-playlist wp-audio-playlist wp-playlist-light">

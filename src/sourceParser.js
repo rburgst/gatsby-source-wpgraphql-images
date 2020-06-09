@@ -154,17 +154,6 @@ module.exports = async function sourceParser(
   // deletes <p> elements
   pRefs.forEach((elem) => elem.remove())
 
-  // also replace <p>&nbsp;<p> until https://github.com/remarkablemark/html-dom-parser/issues/25 is fixed
-  $('p').each((index, item) => {
-    let childCount = item.children && item.children.length
-    if (childCount === 1) {
-      const child = item.children[0]
-      if (child.type === 'text' && child.data === '&nbsp;') {
-        child.data = " "
-      }
-    }
-  })
-
   await Promise.all(
     localRefs.map(async (item) => {
       const sourceUrl = normalizeUrl(item.url, uploadsUrls, uploadsUrl)
