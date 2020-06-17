@@ -121,8 +121,7 @@ describe('contentParser', () => {
     expect(json).toMatchSnapshot()
   })
 
-  // disabled until https://github.com/remarkablemark/html-dom-parser/issues/25 is fixed
-  xit('should properly parse audio tags', () => {
+  it('should properly parse audio tags', () => {
     const files = [
       {
         publicURL: '/static/c1624b1ea899ec0e662be2d2c55356e2/part1.mp3',
@@ -270,5 +269,30 @@ describe('contentParser', () => {
         <source type="video/mp4" src="/static/c1624b1ea899ec0e662be2d2c55356e2/video.mp4"/>
         <a href="/static/c1624b1ea899ec0e662be2d2c55356e2/video.mp4" class=" inline-parsed-img">https://server.com/wp-content/uploads/2020/01/video.mp4</a>
     </video></div>`)
+  })
+
+  it('should maintain img width if specified', () => {
+    const files = [
+      {
+        publicURL: '/static/c1624b1ea899ec0e662be2d2c55356e2/img.png',
+        childImageSharp: {
+          fluid: {
+            srcWebp: '/static/af2e8e490f207a56a56992795f0545c9/c6969/img.webp',
+            presentationWidth: 720,
+          },
+        },
+      },
+    ]
+
+    const content = `<p>
+<img class="alignleft wp-image-8178" src="https://ism-wsp-wordpress.sbg.emundo.eu/wp-content/uploads/2018/05/Mirabell_Logo_RGB.jpg" alt="" width="153" height="64" data-gts-encfluid="0"/>
+</p>`
+
+    const result = contentParser.default({ content, files }, options)
+    const output = renderToStaticMarkup(result)
+    expect(output)
+      .toEqual(`<p>
+<div class="alignleft wp-image-8178 inline-parsed-img gatsby-image-wrapper" style="position:relative;overflow:hidden;width:153px"><div aria-hidden="true" style="width:100%;padding-bottom:NaN%"></div><picture><source/><img alt="" loading="lazy" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity 500ms"/></picture><noscript><picture><source srcset="undefined" /><img loading="lazy" src="" alt="" style="position:absolute;top:0;left:0;opacity:1;width:100%;height:100%;object-fit:cover;object-position:center"/></picture></noscript></div>
+</p>`)
   })
 })

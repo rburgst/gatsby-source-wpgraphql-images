@@ -1,3 +1,6 @@
+/** @jsx jsx */
+import { jsx } from "theme-ui"
+
 import { Link } from 'gatsby'
 import Img from 'gatsby-image'
 import parser, { domToReact } from 'html-react-parser'
@@ -185,7 +188,7 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
       // data passed from sourceParser
       const fluidData = domNode.name === 'img' && getByPath(domNode, 'attribs[data-gts-encfluid]', null)
 
-      if (fluidData && files) {
+      if (domNode.name === 'img' && fluidData && files) {
         const fluidIndex = parseInt(fluidData, 10)
         const fluidDataParsed = files[fluidIndex].childImageSharp.fluid
 
@@ -205,10 +208,7 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
 
         return (
           <Img
-            sx={{
-              variant: 'styles.SourcedImage',
-              ...extraSx,
-            }}
+            style={extraSx}
             fluid={fluidDataParsed}
             className={imageClassName}
             alt={altText}
