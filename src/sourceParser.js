@@ -277,8 +277,8 @@ module.exports = async function sourceParser(
   })
   // ensure that cheerio does not produce empty divs which are invalid html
   // https://github.com/cheeriojs/cheerio/issues/1235
-  $('div').filter((i,e) => !e.children.length).text('')
-  $('p').filter((i,e) => !e.children.length).text('')
+  $('div').filter((i, e) => !e.children.length).text('')
+  $('p').filter((i, e) => !e.children.length).text('')
 
   $('video').each((i, item) => {
     let url = item.attribs.poster
@@ -334,5 +334,5 @@ module.exports = async function sourceParser(
   })
 
   const result = $.html()
-  return { parsed: result, didWork, foundRefs }
+  return { parsed: result, didWork, foundRefs, parseTimestamp: Date.now() }
 }
