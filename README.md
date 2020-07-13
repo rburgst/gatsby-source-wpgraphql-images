@@ -74,6 +74,11 @@ be downloaded or not. Allows more complex configuration.
 
 `supportedExtensions` a map in the form of
 
+`cacheTimeInSeconds` the time how long we will cache the parsed output, this is specifically important to configure
+   in case you are using the `refetchInterval` for `gatsby-source-graphql`. Otherwise parsed values will be cached
+   for the lifetime of the `gatsby develop` run.
+   If this value is not set, then values will be cached indefinitely even if the underlying data changes.
+
 ```javascript
 { pdf: true, mp3: true, jpg: true, jpeg: true, png: true }
 ```

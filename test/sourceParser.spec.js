@@ -1,13 +1,19 @@
 const sourceParser = require('../src/sourceParser')
 
+const mockReporter = {
+  warn: (msg) => {
+    console.warn(msg)
+  }
+}
 describe('sourceParser', () => {
   const options = {
     uploadsUrls: ['https://server.com/wp-content/uploads/', 'http://dockerhost:8000/wp-content/uploads/'],
     uploadsUrl: 'https://server.com/wp-content/uploads/',
     wordPressUrls: ['https://server.com/', 'http://dockerhost:8000/'],
     wordPressUrl: 'https://server.com/',
+    debugOutput: true
   }
-  const params = { actions: {} }
+  const params = { actions: {}, reporter: mockReporter }
   const nodeModel = {
     'https://server.com/wp-content/uploads/2019/04/part1.mp3': 'part1.mp3',
     'https://server.com/wp-content/uploads/2019/04/part2.mp3': 'part2.mp3',

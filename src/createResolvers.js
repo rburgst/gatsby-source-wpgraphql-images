@@ -5,6 +5,21 @@ const findExistingNode = (uri, allNodes) => allNodes.find((node) => node.sourceU
 
 const postsBeingParsed = new Map()
 
+async function getCachedValue(cacheTimeInSeconds, uri, logger) {
+  logger("checking cached value for", uri)
+  let resultPromise = await postsBeingParsed.get(uri)
+  let useCacheValue = true
+
+  if (resultPromise.parseTimestamp) {
+    const age = Date.now() - resultPromise.parseTimestamp
+    if (cacheTimeInSeconds > 0 && age > cacheTimeInSeconds * 1000) {
+      postsBeingParsed.delete(uri)
+      useCacheValue = false
+    }
+  }
+  return useCacheValue ? resultPromise : undefined
+}
+
 module.exports = async function createResolvers(params, pluginOptions) {
   const contentNodeType = 'ParsedWordPressContent'
   const { createResolvers, getNodesByType, reporter, getCache } = params
@@ -13,6 +28,7 @@ module.exports = async function createResolvers(params, pluginOptions) {
     customTypeRegistrations = [],
     debugOutput = false,
     keyExtractor = (source, context, info) => source.uri,
+    cacheTimeInSeconds = -1
   } = pluginOptions
 
   const logger = (...args) => {
@@ -27,10 +43,6 @@ module.exports = async function createResolvers(params, pluginOptions) {
   const contentResolverFiles = async (source, args, context, info) => {
     // const { uri, path } = source;
     let uri = keyExtractor(source, context, info)
-    // FIXME dont check this in
-    if (!uri) {
-      uri = 'sepp ' + Math.random()
-    }
     logger('Entered contentResolverFiles @', uri || 'URI not defined, skipping')
     let fieldName = info.fieldName
     if (info.fieldName.endsWith('Files')) {
@@ -58,8 +70,11 @@ module.exports = async function createResolvers(params, pluginOptions) {
     // returns promise
     if (postsBeingParsed.has(uri)) {
       logger('node is already being parsed:', uri)
-      let resultPromise = await postsBeingParsed.get(uri)
-      return resultPromise.foundRefs
+      const cachedResult = await getCachedValue(cacheTimeInSeconds, uri, logger)
+
+      if (cachedResult) {
+        return cachedResult.foundRefs
+      }
     }
 
     const parsing = (async () => {
@@ -86,10 +101,6 @@ module.exports = async function createResolvers(params, pluginOptions) {
   const contentResolverParsed = async (source, args, context, info) => {
     // const { uri, path } = source;
     let uri = keyExtractor(source, context, info)
-    // FIXME dont check this in
-    if (!uri) {
-      uri = 'sepp ' + Math.random()
-    }
     logger('Entered contentResolver @', uri || 'URI not defined, skipping')
     let fieldName = info.fieldName
     if (info.fieldName.endsWith('Parsed')) {
@@ -118,8 +129,11 @@ module.exports = async function createResolvers(params, pluginOptions) {
     // returns promise
     if (postsBeingParsed.has(uri)) {
       logger('node is already being parsed:', uri)
-      let resultVal = await postsBeingParsed.get(uri)
-      return resultVal.parsed
+      const cachedResult = await getCachedValue(cacheTimeInSeconds, uri, logger)
+
+      if (cachedResult) {
+        return cachedResult.parsed
+      }
     }
     const parsing = (async () => {
       try {
