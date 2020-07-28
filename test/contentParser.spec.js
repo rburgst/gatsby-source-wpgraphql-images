@@ -235,6 +235,25 @@ describe('contentParser', () => {
 `)
   })
 
+  it('should properly rewrite a hrefs with hashes', () => {
+    const files = [
+    ]
+
+    const content = `<p>
+<strong>Further info can be found <a href="https://server.com/link/target/#myhash">here</a></strong>.</p>
+<p><strong>And adios</strong></p>
+`
+
+    const result = contentParser.default({ content, files }, options)
+    // const resultComponent = renderer.create(result)
+    const output = renderToStaticMarkup(result)
+    expect(output)
+      .toEqual(`<p>
+<strong>Further info can be found <a href="/link/target/#myhash">here</a></strong>.</p>
+<p><strong>And adios</strong></p>
+`)
+  })
+
   it('should pick webp image if available', () => {
     const files = [
       {
