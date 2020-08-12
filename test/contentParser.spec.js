@@ -226,7 +226,6 @@ describe('contentParser', () => {
 `
 
     const result = contentParser.default({ content, files }, options)
-    // const resultComponent = renderer.create(result)
     const output = renderToStaticMarkup(result)
     expect(output)
       .toEqual(`<p>Bla <strong>lorem ipsum</strong> bla bla <strong>strong bla</strong> some – entities at <a href="mailto:contact@server.com">contact@server.com</a> can be found!<br/>
@@ -245,11 +244,28 @@ describe('contentParser', () => {
 `
 
     const result = contentParser.default({ content, files }, options)
-    // const resultComponent = renderer.create(result)
     const output = renderToStaticMarkup(result)
     expect(output)
       .toEqual(`<p>
 <strong>Further info can be found <a href="/link/target/#myhash">here</a></strong>.</p>
+<p><strong>And adios</strong></p>
+`)
+  })
+
+  it('should properly rewrite a hrefs with query params', () => {
+    const files = [
+    ]
+
+    const content = `<p>
+<strong>Further info can be found <a href="https://server.com/link/target/?query=value&query2=value2">here</a></strong>.</p>
+<p><strong>And adios</strong></p>
+`
+
+    const result = contentParser.default({ content, files }, options)
+    const output = renderToStaticMarkup(result)
+    expect(output)
+      .toEqual(`<p>
+<strong>Further info can be found <a href="/link/target/?query=value&amp;query2=value2">here</a></strong>.</p>
 <p><strong>And adios</strong></p>
 `)
   })
@@ -281,7 +297,6 @@ describe('contentParser', () => {
     </video></div>`
 
     const result = contentParser.default({ content, files }, options)
-    // const resultComponent = renderer.create(result)
     const output = renderToStaticMarkup(result)
     expect(output)
       .toEqual(`<div>bla<video id="video-9064848-1" width="1280" height="720" poster="/static/af2e8e490f207a56a56992795f0545c9/c6969/img.webp" loop="" preload="metadata" controls="" class="wp-video-shortcode">

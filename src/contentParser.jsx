@@ -84,8 +84,16 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
         elementUrlNoProtocol.includes(wordPressUrlNoProtocol) &&
         !elementUrlNoProtocol.includes(uploadsUrlNoProtocol)
       ) {
-        let url = urlParsed.path() + urlParsed.hash()
+        let url = urlParsed.path()
         url = subdirectoryCorrection(url, wordPressUrl)
+        let queryParams = urlParsed.query()
+        if (queryParams) {
+          url = url + "?" + queryParams
+        }
+        const hash = urlParsed.hash()
+        if (hash) {
+          url = url + hash
+        }
         const htmlOptions = {}
         if (className !== '') {
           htmlOptions.className = className
