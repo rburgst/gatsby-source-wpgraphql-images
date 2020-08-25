@@ -1,13 +1,13 @@
 const sourceParser = require('./sourceParser')
 const debugLog = require('./utils').debugLog
 
-const findExistingNode = (uri, allNodes) => allNodes.find((node) => node.sourceUri === uri)
+const findExistingNode = (uri, allNodes, fieldName) => allNodes.find((node) => node.sourceUri === uri)
 
 const postsBeingParsed = new Map()
 
-async function getCachedValue(cacheTimeInSeconds, uri, logger) {
+async function getCachedValue(cacheTimeInSeconds, uri, logger, fieldName) {
   logger("checking cached value for", uri)
-  let resultPromise = await postsBeingParsed.get(uri)
+  let resultPromise = await postsBeingParsed.get(uri + "|" + fieldName)
   let useCacheValue = true
 
   if (resultPromise.parseTimestamp) {
@@ -59,8 +59,10 @@ module.exports = async function createResolvers(params, pluginOptions) {
       return content
     }
 
+    const cacheKey = uri + "|" + fieldName
+
     // if a node with a given URI exists
-    const cached = findExistingNode(uri, getNodesByType(contentNodeType))
+    const cached = findExistingNode(uri, getNodesByType(contentNodeType), fieldName)
     // returns content from that node
     if (cached) {
       logger('node already created:', uri)
@@ -68,9 +70,9 @@ module.exports = async function createResolvers(params, pluginOptions) {
     }
 
     // returns promise
-    if (postsBeingParsed.has(uri)) {
+    if (postsBeingParsed.has(cacheKey)) {
       logger('node is already being parsed:', uri)
-      const cachedResult = await getCachedValue(cacheTimeInSeconds, uri, logger)
+      const cachedResult = await getCachedValue(cacheTimeInSeconds, uri, logger, fieldName)
 
       if (cachedResult) {
         return cachedResult.foundRefs
@@ -88,7 +90,7 @@ module.exports = async function createResolvers(params, pluginOptions) {
       }
     })()
 
-    postsBeingParsed.set(uri, parsing)
+    postsBeingParsed.set(cacheKey, parsing)
 
     let finalRes = await parsing
     return finalRes.foundRefs
@@ -118,8 +120,9 @@ module.exports = async function createResolvers(params, pluginOptions) {
       return content
     }
 
+    const cacheKey = uri + "|" + fieldName
     // if a node with a given URI exists
-    const cached = findExistingNode(uri, getNodesByType(contentNodeType))
+    const cached = findExistingNode(uri, getNodesByType(contentNodeType), fieldName)
     // returns content from that node
     if (cached) {
       logger('node already created:', uri)
@@ -127,9 +130,9 @@ module.exports = async function createResolvers(params, pluginOptions) {
     }
 
     // returns promise
-    if (postsBeingParsed.has(uri)) {
+    if (postsBeingParsed.has(cacheKey)) {
       logger('node is already being parsed:', uri)
-      const cachedResult = await getCachedValue(cacheTimeInSeconds, uri, logger)
+      const cachedResult = await getCachedValue(cacheTimeInSeconds, uri, logger, fieldName)
 
       if (cachedResult) {
         return cachedResult.parsed
@@ -146,7 +149,7 @@ module.exports = async function createResolvers(params, pluginOptions) {
       }
     })()
 
-    postsBeingParsed.set(uri, parsing)
+    postsBeingParsed.set(cacheKey, parsing)
 
     let finalRes = await parsing
     return finalRes.parsed
