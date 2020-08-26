@@ -5,15 +5,23 @@ const findExistingNode = (uri, allNodes, fieldName) => allNodes.find((node) => n
 
 const postsBeingParsed = new Map()
 
-async function getCachedValue(cacheTimeInSeconds, uri, logger, fieldName) {
+function calculateCacheKey(uri, fieldName, info, content) {
+  if (uri === 'nouri') {
+    return 'nocache'
+  }
+  const resolverTypeName = info.parentType.name
+  const firstPartOfContent = content ? content.substring(0, 50) : '' || ''
+  return uri + "|" + fieldName + "|" + resolverTypeName + '|' + firstPartOfContent
+}
+async function getCachedValue(cacheTimeInSeconds, uri, logger, fieldName, cacheKey) {
   logger("checking cached value for", uri)
-  let resultPromise = await postsBeingParsed.get(uri + "|" + fieldName)
+  let resultPromise = await postsBeingParsed.get(cacheKey)
   let useCacheValue = true
 
   if (resultPromise.parseTimestamp) {
     const age = Date.now() - resultPromise.parseTimestamp
     if (cacheTimeInSeconds > 0 && age > cacheTimeInSeconds * 1000) {
-      postsBeingParsed.delete(uri)
+      postsBeingParsed.delete(cacheKey)
       useCacheValue = false
     }
   }
@@ -42,7 +50,7 @@ module.exports = async function createResolvers(params, pluginOptions) {
   // - repeat request for the same content (determined by uri) returns cached result
   const contentResolverFiles = async (source, args, context, info) => {
     // const { uri, path } = source;
-    let uri = keyExtractor(source, context, info)
+    let uri = keyExtractor(source, context, info) || 'nouri'
     logger('Entered contentResolverFiles @', uri || 'URI not defined, skipping')
     let fieldName = info.fieldName
     if (info.fieldName.endsWith('Files')) {
@@ -59,7 +67,7 @@ module.exports = async function createResolvers(params, pluginOptions) {
       return content
     }
 
-    const cacheKey = uri + "|" + fieldName
+    const cacheKey = calculateCacheKey(uri, fieldName, info, content)
 
     // if a node with a given URI exists
     const cached = findExistingNode(uri, getNodesByType(contentNodeType), fieldName)
@@ -72,7 +80,7 @@ module.exports = async function createResolvers(params, pluginOptions) {
     // returns promise
     if (postsBeingParsed.has(cacheKey)) {
       logger('node is already being parsed:', uri)
-      const cachedResult = await getCachedValue(cacheTimeInSeconds, uri, logger, fieldName)
+      const cachedResult = await getCachedValue(cacheTimeInSeconds, uri, logger, fieldName, cacheKey)
 
       if (cachedResult) {
         return cachedResult.foundRefs
@@ -90,7 +98,9 @@ module.exports = async function createResolvers(params, pluginOptions) {
       }
     })()
 
-    postsBeingParsed.set(cacheKey, parsing)
+    if (cacheKey !== 'nocache') {
+      postsBeingParsed.set(cacheKey, parsing)
+    }
 
     let finalRes = await parsing
     return finalRes.foundRefs
@@ -102,7 +112,7 @@ module.exports = async function createResolvers(params, pluginOptions) {
   // - repeat request for the same content (determined by uri) returns cached result
   const contentResolverParsed = async (source, args, context, info) => {
     // const { uri, path } = source;
-    let uri = keyExtractor(source, context, info)
+    let uri = keyExtractor(source, context, info) || 'nouri'
     logger('Entered contentResolver @', uri || 'URI not defined, skipping')
     let fieldName = info.fieldName
     if (info.fieldName.endsWith('Parsed')) {
@@ -120,7 +130,7 @@ module.exports = async function createResolvers(params, pluginOptions) {
       return content
     }
 
-    const cacheKey = uri + "|" + fieldName
+    const cacheKey = calculateCacheKey(uri, fieldName, info, content)
     // if a node with a given URI exists
     const cached = findExistingNode(uri, getNodesByType(contentNodeType), fieldName)
     // returns content from that node
@@ -132,7 +142,7 @@ module.exports = async function createResolvers(params, pluginOptions) {
     // returns promise
     if (postsBeingParsed.has(cacheKey)) {
       logger('node is already being parsed:', uri)
-      const cachedResult = await getCachedValue(cacheTimeInSeconds, uri, logger, fieldName)
+      const cachedResult = await getCachedValue(cacheTimeInSeconds, uri, logger, fieldName, cacheKey)
 
       if (cachedResult) {
         return cachedResult.parsed
@@ -149,7 +159,9 @@ module.exports = async function createResolvers(params, pluginOptions) {
       }
     })()
 
-    postsBeingParsed.set(cacheKey, parsing)
+    if (cacheKey !== 'nocache') {
+      postsBeingParsed.set(cacheKey, parsing)
+    }
 
     let finalRes = await parsing
     return finalRes.parsed
@@ -157,7 +169,9 @@ module.exports = async function createResolvers(params, pluginOptions) {
 
   processPostTypes.forEach((element) => {
     let params = {}
-    params[`${pluginOptions.graphqlTypeName}_${element}`] = {
+    const resolverTypeName = `${pluginOptions.graphqlTypeName}_${element}`
+    const resolverFieldName = 'content'
+    params[resolverTypeName] = {
       contentFiles: {
         type: ['File'],
         resolve: contentResolverFiles,
@@ -167,23 +181,25 @@ module.exports = async function createResolvers(params, pluginOptions) {
         resolve: contentResolverParsed,
       },
     }
-    logger('Registering ', `${pluginOptions.graphqlTypeName}_${element}`)
+    logger('Registering ', resolverTypeName)
 
     createResolvers(params)
   })
   customTypeRegistrations.forEach((registration) => {
     let params = {}
-    params[registration.graphqlTypeName] = {
-      [`${registration.fieldName}Files`]: {
+    const resolverTypeName = registration.graphqlTypeName
+    const resolverFieldName = registration.fieldName
+    params[resolverTypeName] = {
+      [`${resolverFieldName}Files`]: {
         type: ['File'],
         resolve: contentResolverFiles,
       },
-      [`${registration.fieldName}Parsed`]: {
+      [`${resolverFieldName}Parsed`]: {
         type: 'String',
         resolve: contentResolverParsed,
       },
     }
-    logger('Registering custom resolver ', registration.graphqlTypeName)
+    logger('Registering custom resolver ', resolverTypeName + "." + resolverFieldName)
 
     createResolvers(params)
 
