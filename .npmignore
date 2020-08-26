@@ -36,3 +36,10 @@ examples
 .prettierignore
 .prettierrc
 .eslintrc.json
+
+.idea
+.vscode
+test/*
+jest*.js
+__mocks__/*
+babel.config.js
