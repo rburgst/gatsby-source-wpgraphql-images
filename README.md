@@ -101,8 +101,16 @@ query GET_PAGES {
       nodes {
         uri
         content
-        contentFiles
         contentParsed
+        contentFiles {
+          publicURL
+          childImageSharp {
+            fluid(maxWidth: 720) {
+              ...GatsbyImageSharpFluid_withWebp
+              presentationWidth
+            }
+          }
+        }
       }
     }
   }
@@ -223,7 +231,15 @@ query MyQuery {
         acfDemoFields {
           fieldInAcf
           fieldInAcfParsed
-          fieldInAcfFiles
+          fieldInAcfFiles {
+            publicURL
+            childImageSharp {
+              fluid(maxWidth: 720) {
+                ...GatsbyImageSharpFluid_withWebp
+                presentationWidth
+              }
+            }
+          }
         }
       }
     }
