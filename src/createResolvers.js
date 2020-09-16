@@ -1,3 +1,4 @@
+const { createContentDigest } = require('gatsby-core-utils')
 const sourceParser = require('./sourceParser')
 const debugLog = require('./utils').debugLog
 
@@ -10,11 +11,12 @@ function calculateCacheKey(uri, fieldName, info, content) {
     return 'nocache'
   }
   const resolverTypeName = info.parentType.name
-  const firstPartOfContent = content ? content.substring(0, 50) : '' || ''
-  return uri + "|" + fieldName + "|" + resolverTypeName + '|' + firstPartOfContent
+  const digest = createContentDigest(content)
+  return uri + '|' + fieldName + '|' + resolverTypeName + '|' + digest
 }
+
 async function getCachedValue(cacheTimeInSeconds, uri, logger, fieldName, cacheKey) {
-  logger("checking cached value for", uri)
+  logger('checking cached value for', uri)
   let resultPromise = await postsBeingParsed.get(cacheKey)
   let useCacheValue = true
 
@@ -36,7 +38,7 @@ module.exports = async function createResolvers(params, pluginOptions) {
     customTypeRegistrations = [],
     debugOutput = false,
     keyExtractor = (source, context, info) => source.uri,
-    cacheTimeInSeconds = -1
+    cacheTimeInSeconds = -1,
   } = pluginOptions
 
   const logger = (...args) => {
@@ -199,7 +201,7 @@ module.exports = async function createResolvers(params, pluginOptions) {
         resolve: contentResolverParsed,
       },
     }
-    logger('Registering custom resolver ', resolverTypeName + "." + resolverFieldName)
+    logger('Registering custom resolver ', resolverTypeName + '.' + resolverFieldName)
 
     createResolvers(params)
 
