@@ -73,25 +73,25 @@ module.exports = async ({ actions, createNodeId, getCache, store, reporter, crea
     headers,
   })
   const query = gql`
-      query FetchImages($after: String, $pageSize: Int!) {
-          mediaItems(first: $pageSize, after: $after) {
-              pageInfo {
-                  hasNextPage
-                  endCursor
-              }
-              nodes {
-                  databaseId
-                  sourceUrl
-                  mediaItemUrl
-                  mediaDetails {
-                      sizes {
-                          name
-                          sourceUrl
-                      }
-                  }
-              }
+    query FetchImages($after: String, $pageSize: Int!) {
+      mediaItems(first: $pageSize, after: $after) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          databaseId
+          sourceUrl
+          mediaItemUrl
+          mediaDetails {
+            sizes {
+              name
+              sourceUrl
+            }
           }
+        }
       }
+    }
   `
 
   const createFileNode = async (pathToFile, createNodeId, pluginOptions = {}) => {
@@ -173,7 +173,7 @@ module.exports = async ({ actions, createNodeId, getCache, store, reporter, crea
       await Promise.all(
         data.mediaItems.nodes.map(async (node) => {
           let { sourceUrl, mediaItemUrl, mediaDetails, databaseId } = node
-          sourceUrl = sourceUrl || mediaItemUrl
+          sourceUrl = mediaItemUrl || sourceUrl
           if (!sourceUrl || sourceUrl === 'false') {
             return undefined
           }
@@ -189,7 +189,7 @@ module.exports = async ({ actions, createNodeId, getCache, store, reporter, crea
             return undefined
           }
 
-          const myData = {id: databaseId , mediaItemId: databaseId, sourceUrl: rewritten}
+          const myData = { id: databaseId, mediaItemId: databaseId, sourceUrl: rewritten }
           const nodeContent = JSON.stringify(myData)
           const nodeMeta = {
             id: createNodeId(`wp-media-${databaseId}`),
