@@ -235,8 +235,7 @@ describe('contentParser', () => {
   })
 
   it('should properly rewrite a hrefs with hashes', () => {
-    const files = [
-    ]
+    const files = []
 
     const content = `<p>
 <strong>Further info can be found <a href="https://server.com/link/target/#myhash">here</a></strong>.</p>
@@ -245,16 +244,14 @@ describe('contentParser', () => {
 
     const result = contentParser.default({ content, files }, options)
     const output = renderToStaticMarkup(result)
-    expect(output)
-      .toEqual(`<p>
+    expect(output).toEqual(`<p>
 <strong>Further info can be found <a href="/link/target/#myhash">here</a></strong>.</p>
 <p><strong>And adios</strong></p>
 `)
   })
 
   it('should properly rewrite a hrefs with query params', () => {
-    const files = [
-    ]
+    const files = []
 
     const content = `<p>
 <strong>Further info can be found <a href="https://server.com/link/target/?query=value&query2=value2">here</a></strong>.</p>
@@ -263,8 +260,7 @@ describe('contentParser', () => {
 
     const result = contentParser.default({ content, files }, options)
     const output = renderToStaticMarkup(result)
-    expect(output)
-      .toEqual(`<p>
+    expect(output).toEqual(`<p>
 <strong>Further info can be found <a href="/link/target/?query=value&amp;query2=value2">here</a></strong>.</p>
 <p><strong>And adios</strong></p>
 `)
@@ -324,9 +320,8 @@ describe('contentParser', () => {
 
     const result = contentParser.default({ content, files }, options)
     const output = renderToStaticMarkup(result)
-    expect(output)
-      .toEqual(`<p>
-<div class="alignleft wp-image-8178 inline-parsed-img gatsby-image-wrapper" style="position:relative;overflow:hidden;width:153px"><div aria-hidden="true" style="width:100%;padding-bottom:NaN%"></div><picture><source/><img alt="" loading="lazy" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity 500ms"/></picture><noscript><picture><source srcset="undefined" /><img loading="lazy" src="" alt="" style="position:absolute;top:0;left:0;opacity:1;width:100%;height:100%;object-fit:cover;object-position:center"/></picture></noscript></div>
+    expect(output).toEqual(`<p>
+<div class="alignleft wp-image-8178 inline-parsed-img gatsby-image-wrapper" style="position:relative;overflow:hidden;width:153px"><div aria-hidden="true" style="width:100%;padding-bottom:NaN%"></div><picture><img alt="" loading="lazy" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity 500ms"/></picture><noscript><picture><source srcset="undefined" /><img loading="lazy" src="" alt="" style="position:absolute;top:0;left:0;opacity:1;width:100%;height:100%;object-fit:cover;object-position:center"/></picture></noscript></div>
 </p>`)
   })
 })
