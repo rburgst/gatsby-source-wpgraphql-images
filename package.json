@@ -30,7 +30,7 @@
     "gatsby-source-filesystem": "^2.3.30",
     "gatsby-transformer-sharp": "^2.5.15",
     "graphql-tag": "^2.11.0",
-    "html-react-parser": "^0.14.0",
+    "html-react-parser": "^1.4.14",
     "lodash": "^4.17.20",
     "mime": "^2.4.6",
     "theme-ui": "^0.3.1",

@@ -227,6 +227,9 @@ export default function contentParser({ content, files }, { wordPressUrl, upload
     },
   }
 
-  let parseResult = parser(content, parserOptions)
+  let parseResult = /* TODO: JSFIX could not patch the breaking change:
+  The standard way of using the replace option may not work 
+  Suggested fix: You may find more information here https://github.com/remarkablemark/html-react-parser#v100 */
+  parser(content, parserOptions)
   return parseResult
 }
